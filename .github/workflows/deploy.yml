@@ -23,7 +23,7 @@ jobs:
       - name: Build json-diff-viewer
         run: |
           cd json-diff-viewer
-          npm ci
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Prepare publish directory
