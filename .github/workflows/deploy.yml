@@ -24,7 +24,7 @@ jobs:
         run: |
           cd json-diff-viewer
           npm install --legacy-peer-deps
-          npm run build
+          PUBLIC_URL=/tools/json-diff-viewer/ npm run build
 
       - name: Prepare publish directory
         run: |
