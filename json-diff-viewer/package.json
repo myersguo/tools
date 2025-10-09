@@ -1,7 +1,7 @@
 {
   "name": "json-diff-viewer",
   "version": "0.1.0",
-  "homepage": ".",
+  "homepage": "https://myersguo.github.io/tools/json-diff-viewer",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^9.3.1",
