@@ -23,10 +23,14 @@ jobs:
           npm install
           npm run build
 
+      - name: Prepare publish directory
+        run: |
+          mkdir -p publish/json-diff-viewer
+          cp -r json-diff-viewer/build/* publish/json-diff-viewer/
+          cp docs/index.html publish/
+
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./json-diff-viewer/build
-          destination_dir: ./json-diff-viewer
-          keep_files: true
+          publish_dir: ./publish
