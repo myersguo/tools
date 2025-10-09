@@ -1,7 +1,7 @@
 {
   "name": "json-diff-viewer",
   "version": "0.1.0",
-  "homepage": "/tools/json-diff-viewer",
+  "homepage": ".",
   "private": true,
   "dependencies": {
     "@testing-library/dom": "^9.3.1",
