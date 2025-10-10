@@ -59,7 +59,12 @@ function App() {
   return (
     <div className="App">
       <Container fluid>
-        <h1 className="my-4">JSON Diff Viewer</h1>
+        <div className="text-center">
+          <h1 className="my-4">JSON Diff Viewer</h1>
+          <p className="lead text-muted">
+            Instantly compare two JSON documents and highlight the differences. Paste your code into the 'Old' and 'New' text areas, or load from a file, to analyze and view the changes.
+          </p>
+        </div>
         <Row>
           <Col md={6}>
             <h2>Old JSON</h2>
