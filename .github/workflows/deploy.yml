@@ -19,21 +19,33 @@ jobs:
         with:
           node-version: '18'
 
-      - name: Downgrade npm (react-scripts 5 compatibility)
-        run: npm install -g npm@9
-
-      - name: Build json-diff-viewer
+      - name: Build All Applications
         run: |
+          # Build homepage app
+          echo "Building homepage..."
+          cd homepage
+          npm install
+          npm run build
+          cd ..
+          
+          # Build json-diff-viewer app
+          echo "Building json-diff-viewer..."
           cd json-diff-viewer
           npm install --legacy-peer-deps
           npm run build
+          cd ..
 
-      - name: Prepare publish directory
+      - name: Prepare Publish Directory
         run: |
+          # Clean and create the publish directory
           rm -rf publish
           mkdir -p publish
+          
+          # Copy homepage build to the root of the publish directory
+          cp -r homepage/build/* publish/
+          
+          # Move json-diff-viewer build into its subdirectory
           mv json-diff-viewer/build publish/json-diff-viewer
-          cp docs/index.html publish/index.html
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
