@@ -34,6 +34,13 @@ jobs:
           npm install --legacy-peer-deps
           npm run build
           cd ..
+          
+          # Build json-formatter app
+          echo "Building json-formatter..."
+          cd json-formatter
+          npm install
+          npm run build
+          cd ..
 
       - name: Prepare Publish Directory
         run: |
@@ -46,10 +53,12 @@ jobs:
           
           # Move json-diff-viewer build into its subdirectory
           mv json-diff-viewer/build publish/json-diff-viewer
+          
+          # Move json-formatter build into its subdirectory
+          mv json-formatter/build publish/json-formatter
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./publish
-

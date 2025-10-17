@@ -1,5 +1,5 @@
 import React from 'react';
-import { GitCompare } from 'lucide-react'; // Import a relevant icon
+import { GitCompare, FileJson } from 'lucide-react'; // Import icons
 import './App.css';
 
 function App() {
@@ -31,21 +31,22 @@ function App() {
               </a>
             </div>
 
-            {/* --- Placeholder for future tools --- */}
-            {/* 
+            {/* JSON Formatter Card */}
             <div className="bg-gray-800 rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
               <div className="flex items-center mb-4">
-                <IconName className="w-8 h-8 mr-4 text-green-400" />
-                <h2 className="text-2xl font-bold">Another Tool</h2>
+                <FileJson className="w-8 h-8 mr-4 text-green-400" />
+                <h2 className="text-2xl font-bold">JSON Formatter</h2>
               </div>
               <p className="text-gray-400 mb-6">
-                Description for the next great tool you will build.
+                Format, minify, escape, or unescape JSON data. View in a tree structure with syntax highlighting.
               </p>
-              <a href="#" className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300">
-                Coming Soon
+              <a 
+                href="json-formatter/" 
+                className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-300"
+              >
+                Open Tool
               </a>
             </div>
-            */}
 
           </div>
         </main>
