@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { Container, Row, Col, Form, Button, ButtonGroup, Alert } from 'react-bootstrap';
 import { JsonView, defaultStyles, darkStyles } from 'react-json-view-lite';
+import { parse as bestEffortParse } from 'best-effort-json-parser';
 import 'react-json-view-lite/dist/index.css';
 import './App.css';
 
@@ -31,8 +32,22 @@ function App() {
   const [formattedJson, setFormattedJson] = useState('');
   const [parsedData, setParsedData] = useState<any>(null);
   const [error, setError] = useState('');
+  const [warning, setWarning] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
   const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  // 尝试解析 JSON，支持自动修复非法/截断的 JSON
+  const parseJson = (input: string): { data: any; repaired: boolean } => {
+    // 先尝试标准解析
+    try {
+      const data = JSON.parse(input);
+      return { data, repaired: false };
+    } catch {
+      // 标准解析失败，使用 best-effort 解析器处理截断的 JSON
+      const data = bestEffortParse(input);
+      return { data, repaired: true };
+    }
+  };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -50,67 +65,75 @@ function App() {
 
   const formatJson = (indent: number = 2) => {
     try {
-      const parsed = JSON.parse(inputJson);
-      const formatted = JSON.stringify(parsed, null, indent);
+      const { data, repaired } = parseJson(inputJson);
+      const formatted = JSON.stringify(data, null, indent);
       setFormattedJson(formatted);
-      setParsedData(parsed);
+      setParsedData(data);
       setError('');
+      setWarning(repaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
     } catch (err) {
-      setError(`Invalid JSON: ${(err as Error).message}`);
+      setError(`Cannot repair JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
+      setWarning('');
     }
   };
 
   const minifyJson = () => {
     try {
-      const parsed = JSON.parse(inputJson);
-      const minified = JSON.stringify(parsed);
+      const { data, repaired } = parseJson(inputJson);
+      const minified = JSON.stringify(data);
       setFormattedJson(minified);
-      setParsedData(parsed);
+      setParsedData(data);
       setError('');
+      setWarning(repaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
     } catch (err) {
-      setError(`Invalid JSON: ${(err as Error).message}`);
+      setError(`Cannot repair JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
+      setWarning('');
     }
   };
 
   const escapeJson = () => {
     try {
-      const parsed = JSON.parse(inputJson);
-      const jsonString = JSON.stringify(parsed);
+      const { data, repaired } = parseJson(inputJson);
+      const jsonString = JSON.stringify(data);
       // Escape the JSON string
       const escaped = JSON.stringify(jsonString);
       setFormattedJson(escaped);
       setParsedData(null);
       setError('');
+      setWarning(repaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
     } catch (err) {
-      setError(`Invalid JSON: ${(err as Error).message}`);
+      setError(`Cannot repair JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
+      setWarning('');
     }
   };
 
   const unescapeJson = () => {
     try {
       // Try to unescape the input
-      const unescaped = JSON.parse(inputJson);
+      const { data: unescaped, repaired } = parseJson(inputJson);
       if (typeof unescaped === 'string') {
         // If the result is a string, parse it again to get the JSON object
-        const parsed = JSON.parse(unescaped);
+        const { data: parsed, repaired: innerRepaired } = parseJson(unescaped);
         const formatted = JSON.stringify(parsed, null, 2);
         setFormattedJson(formatted);
         setParsedData(parsed);
         setError('');
+        setWarning(repaired || innerRepaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
       } else {
         // If it's already an object, just format it
         formatJson();
       }
     } catch (err) {
-      setError(`Invalid escaped JSON: ${(err as Error).message}`);
+      setError(`Cannot repair escaped JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
+      setWarning('');
     }
   };
 
@@ -128,6 +151,7 @@ function App() {
     setFormattedJson('');
     setParsedData(null);
     setError('');
+    setWarning('');
   };
 
   return (
@@ -185,6 +209,12 @@ function App() {
             {error && (
               <Alert variant="danger" className="mt-3">
                 {error}
+              </Alert>
+            )}
+
+            {warning && (
+              <Alert variant="warning" className="mt-3">
+                {warning}
               </Alert>
             )}
           </Col>
