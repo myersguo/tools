@@ -34,7 +34,27 @@ function App() {
   const [showDiff, setShowDiff] = useState(false);
   const [showDiffOnly, setShowDiffOnly] = useState(true);
   const [linesAroundDiff, setLinesAroundDiff] = useState(3);
+  const [sortKeys, setSortKeys] = useState(false);
 
+
+  const sortJsonKeys = (obj: any): any => {
+    if (obj === null || typeof obj !== 'object') {
+      return obj;
+    }
+
+    if (Array.isArray(obj)) {
+      return obj.map(sortJsonKeys);
+    }
+
+    const sortedKeys = Object.keys(obj).sort();
+    const sortedObj: any = {};
+
+    for (const key of sortedKeys) {
+      sortedObj[key] = sortJsonKeys(obj[key]);
+    }
+
+    return sortedObj;
+  };
 
   const handleFileChange = (setter: React.Dispatch<React.SetStateAction<string>>) => (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -50,6 +70,20 @@ function App() {
   const handleDiffClick = () => {
     setShowDiff(true);
   }
+
+  const processJsonForDiff = (jsonString: string): string => {
+    if (!sortKeys) {
+      return jsonString;
+    }
+
+    try {
+      const parsed = JSON.parse(jsonString);
+      const sorted = sortJsonKeys(parsed);
+      return JSON.stringify(sorted, null, 2);
+    } catch (error) {
+      return jsonString;
+    }
+  };
 
   const radios = [
     { name: 'Side-by-Side', value: 'true' },
@@ -137,6 +171,15 @@ function App() {
                   onChange={() => setShowDiffOnly(!showDiffOnly)}
                 />
               </Col>
+              <Col md="auto" className="mx-2">
+                <Form.Check
+                  type="switch"
+                  id="sort-keys-switch"
+                  label="Sort Keys"
+                  checked={sortKeys}
+                  onChange={() => setSortKeys(!sortKeys)}
+                />
+              </Col>
               {showDiffOnly && (
                 <Col md="auto">
                   <Form.Group as={Row} className="align-items-center m-0">
@@ -157,8 +200,8 @@ function App() {
             <Row>
               <Col>
                 <ReactDiffViewer
-                  oldValue={leftJson}
-                  newValue={rightJson}
+                  oldValue={processJsonForDiff(leftJson)}
+                  newValue={processJsonForDiff(rightJson)}
                   splitView={isSideBySide}
                   useDarkTheme={window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches}
                   showDiffOnly={showDiffOnly}
