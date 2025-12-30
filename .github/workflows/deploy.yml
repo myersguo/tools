@@ -42,6 +42,13 @@ jobs:
           npm run build
           cd ..
 
+          # Build encoder-decoder app
+          echo "Building encoder-decoder..."
+          cd encoder-decoder
+          npm install
+          npm run build
+          cd ..
+
       - name: Prepare Publish Directory
         run: |
           # Clean and create the publish directory
@@ -56,6 +63,9 @@ jobs:
           
           # Move json-formatter build into its subdirectory
           mv json-formatter/build publish/json-formatter
+
+          # Move encoder-decoder build into its subdirectory
+          mv encoder-decoder/build publish/encoder-decoder
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
