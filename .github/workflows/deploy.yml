@@ -49,6 +49,13 @@ jobs:
           npm run build
           cd ..
 
+          # Build garbage-sorting app
+          echo "Building garbage-sorting..."
+          cd garbage-sorting
+          npm install
+          npm run build
+          cd ..
+
       - name: Prepare Publish Directory
         run: |
           # Clean and create the publish directory
@@ -66,6 +73,9 @@ jobs:
 
           # Move encoder-decoder build into its subdirectory
           mv encoder-decoder/build publish/encoder-decoder
+
+          # Move garbage-sorting build into its subdirectory
+          mv garbage-sorting/build publish/garbage-sorting
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
