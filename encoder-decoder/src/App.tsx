@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button, ButtonGroup, Alert, Tab, Tabs } from 'react-bootstrap';
 import './App.css';
 
-type EncodingType = 'base64' | 'url' | 'html' | 'hex';
+type EncodingType = 'base64' | 'url' | 'html' | 'hex' | 'unixtime';
 
 interface EncoderResult {
   output: string;
@@ -104,6 +104,80 @@ const hexDecode = (input: string): EncoderResult => {
   }
 };
 
+// Unix timestamp conversion functions
+const unixtimeToDate = (input: string): EncoderResult => {
+  try {
+    // Try to parse as integer timestamp (seconds since Unix epoch)
+    const timestamp = parseInt(input.trim(), 10);
+    if (isNaN(timestamp)) {
+      return { output: '', error: 'Please enter a valid Unix timestamp' };
+    }
+
+    // Handle both seconds and milliseconds timestamps
+    const date = new Date(timestamp.toString().length === 10 ? timestamp * 1000 : timestamp);
+    if (isNaN(date.getTime())) {
+      return { output: '', error: 'Invalid timestamp' };
+    }
+
+    // Generate multiple format representations
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    const seconds = String(date.getSeconds()).padStart(2, '0');
+
+    const formats = [
+      `Local: ${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+      `ISO 8601: ${date.toISOString()}`,
+      `UTC: ${date.toUTCString()}`,
+      `Date: ${date.toLocaleDateString()}`,
+      `Time: ${date.toLocaleTimeString()}`,
+      `Year: ${date.getFullYear()}`,
+      `Month: ${date.getMonth() + 1} (${date.toLocaleDateString('en-US', { month: 'long' })})`,
+      `Day: ${date.getDate()}`,
+      `Hours: ${date.getHours()}`,
+      `Minutes: ${date.getMinutes()}`,
+      `Seconds: ${date.getSeconds()}`
+    ];
+
+    return { output: formats.join('\n'), error: '' };
+  } catch (err) {
+    return { output: '', error: `Unix timestamp decode error: ${(err as Error).message}` };
+  }
+};
+
+const dateToUnixtime = (input: string): EncoderResult => {
+  try {
+    // Try parsing as various date formats
+    let date: Date;
+
+    // First try ISO format
+    date = new Date(input);
+    if (isNaN(date.getTime())) {
+      // Try parsing common date formats
+      date = new Date(Date.parse(input));
+      if (isNaN(date.getTime())) {
+        return { output: '', error: 'Invalid date format. Try ISO format (2024-01-01T00:00:00Z) or common date strings.' };
+      }
+    }
+
+    // Get timestamps in both seconds and milliseconds
+    const timestampSeconds = Math.floor(date.getTime() / 1000);
+    const timestampMs = date.getTime();
+
+    const result = [
+      `Unix timestamp (seconds): ${timestampSeconds}`,
+      `Unix timestamp (milliseconds): ${timestampMs}`,
+      `ISO 8601: ${date.toISOString()}`
+    ];
+
+    return { output: result.join('\n'), error: '' };
+  } catch (err) {
+    return { output: '', error: `Date to timestamp error: ${(err as Error).message}` };
+  }
+};
+
 function App() {
   const [activeTab, setActiveTab] = useState<EncodingType>('base64');
   const [input, setInput] = useState('');
@@ -126,6 +200,9 @@ function App() {
       case 'hex':
         result = hexEncode(input);
         break;
+      case 'unixtime':
+        result = dateToUnixtime(input);
+        break;
       default:
         result = { output: '', error: 'Unknown encoding type' };
     }
@@ -147,6 +224,9 @@ function App() {
         break;
       case 'hex':
         result = hexDecode(input);
+        break;
+      case 'unixtime':
+        result = unixtimeToDate(input);
         break;
       default:
         result = { output: '', error: 'Unknown encoding type' };
@@ -194,6 +274,8 @@ function App() {
         return 'HTML encoding converts special characters to their HTML entity equivalents.';
       case 'hex':
         return 'Hex encoding converts text to its hexadecimal representation.';
+      case 'unixtime':
+        return 'Convert between Unix timestamps (seconds since Jan 1, 1970) and formatted date strings.';
       default:
         return '';
     }
@@ -205,7 +287,7 @@ function App() {
         <div className="text-center mb-4">
           <h1 className="my-4">Encoder / Decoder</h1>
           <p className="lead text-muted">
-            Encode or decode text using Base64, URL, HTML, or Hex encoding.
+            Encode or decode text using Base64, URL, HTML, Hex, or Unix timestamps.
           </p>
         </div>
 
@@ -218,6 +300,7 @@ function App() {
           <Tab eventKey="url" title="URL" />
           <Tab eventKey="html" title="HTML" />
           <Tab eventKey="hex" title="Hex" />
+          <Tab eventKey="unixtime" title="Unix Time" />
         </Tabs>
 
         <p className="text-center text-muted mb-4">{getTabDescription(activeTab)}</p>
@@ -233,7 +316,11 @@ function App() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 className="code-textarea"
-                placeholder="Enter text to encode or decode..."
+                placeholder={
+                  activeTab === 'unixtime'
+                    ? 'Enter Unix timestamp (e.g., 1704067200) or date string (e.g., 2024-01-01T00:00:00Z)...'
+                    : 'Enter text to encode or decode...'
+                }
               />
             </Form.Group>
 
@@ -241,10 +328,10 @@ function App() {
             <div className="action-buttons d-flex flex-wrap gap-2 mt-3">
               <ButtonGroup>
                 <Button variant="primary" onClick={handleEncode}>
-                  Encode
+                  {activeTab === 'unixtime' ? 'Date → Timestamp' : 'Encode'}
                 </Button>
                 <Button variant="secondary" onClick={handleDecode}>
-                  Decode
+                  {activeTab === 'unixtime' ? 'Timestamp → Date' : 'Decode'}
                 </Button>
               </ButtonGroup>
               <Button variant="outline-primary" onClick={swapInputOutput} disabled={!output}>
@@ -326,6 +413,17 @@ function App() {
                     <code>Hello</code>
                     <p className="mt-2"><strong>Encoded:</strong></p>
                     <code>48656c6c6f</code>
+                  </div>
+                </Col>
+              </Row>
+              <Row className="mt-3">
+                <Col md={12} className="mb-3">
+                  <div className="reference-card">
+                    <h5>Unix Timestamps</h5>
+                    <p><strong>Current Timestamp (seconds):</strong> <code>{Math.floor(Date.now() / 1000)}</code></p>
+                    <p><strong>Current Timestamp (milliseconds):</strong> <code>{Date.now()}</code></p>
+                    <p><strong>Example:</strong> <code>1704067200</code> → <code>2024-01-01 00:00:00 UTC</code></p>
+                    <p><strong>Supported formats:</strong> ISO 8601, RFC 2822, common date strings</p>
                   </div>
                 </Col>
               </Row>
