@@ -6,13 +6,14 @@
   font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
   font-size: 14px;
   white-space: pre;
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: var(--claude-bg-card);
+  border: 1px solid var(--claude-border-light);
+  color: var(--claude-text-primary);
 }
 
 .formatted-output {
-  background-color: #f8f9fa;
-  border: 1px solid #dee2e6;
+  background-color: var(--claude-bg-card);
+  border: 1px solid var(--claude-border-light);
   border-radius: 4px;
   padding: 15px;
   max-height: 600px;
@@ -24,33 +25,14 @@
 }
 
 .error-message {
-  color: #dc3545;
-  background-color: #f8d7da;
-  border: 1px solid #f5c6cb;
+  color: var(--claude-status-error);
+  background-color: var(--claude-status-error-bg);
+  border: 1px solid var(--claude-status-error);
   border-radius: 4px;
   padding: 10px;
   margin-top: 10px;
 }
 
-/* Improve visibility for dark mode */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #282c34;
-    color: white;
-  }
-
-  .json-textarea {
-    background-color: #343a40;
-    color: #f8f9fa;
-    border-color: #6c757d;
-  }
-
-  .formatted-output {
-    background-color: #343a40;
-    border-color: #6c757d;
-  }
-
-  h1, h2, h3 {
-    color: #f8f9fa;
-  }
+h1, h2, h3 {
+  color: var(--claude-text-primary);
 }

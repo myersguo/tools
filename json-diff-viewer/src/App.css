@@ -5,23 +5,11 @@
 .json-textarea {
   font-family: monospace;
   white-space: pre;
-  background-color: #f8f9fa;
+  background-color: var(--claude-bg-card);
+  color: var(--claude-text-primary);
+  border: 1px solid var(--claude-border-light);
 }
 
-/* Improve visibility for dark mode */
-@media (prefers-color-scheme: dark) {
-  body {
-    background-color: #282c34;
-    color: white;
-  }
-
-  .json-textarea {
-    background-color: #343a40;
-    color: #f8f9fa;
-    border-color: #6c757d;
-  }
-
-  h1, h2 {
-    color: #f8f9fa;
-  }
+h1, h2 {
+  color: var(--claude-text-primary);
 }

@@ -1,3 +1,35 @@
+:root {
+  /* Claude brand colors */
+  --claude-primary: hsl(195, 100%, 40%);
+  --claude-button: #334BFA;
+  --claude-accent: #CC785C;
+
+  /* Background colors */
+  --claude-bg-main: #FFFFFF;
+  --claude-bg-header: #F0F0EB;
+  --claude-bg-footer: #191919;
+  --claude-bg-card: #FFFFFF;
+
+  /* Text colors */
+  --claude-text-primary: #1a1a1a;
+  --claude-text-secondary: #737373;
+  --claude-text-light: #F0F0EB;
+
+  /* Status colors */
+  --claude-status-info: #334bfa;
+  --claude-status-info-bg: #dce1f9;
+  --claude-status-success: #0f7134;
+  --claude-status-success-bg: #d7efdc;
+  --claude-status-warning: #b24d00;
+  --claude-status-warning-bg: #ffebdb;
+  --claude-status-error: #df2020;
+  --claude-status-error-bg: #ffdbdb;
+
+  /* Border colors */
+  --claude-border-light: #E6E6E6;
+  --claude-border-medium: #CCCCCC;
+}
+
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -5,6 +37,8 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: var(--claude-bg-header);
+  color: var(--claude-text-primary);
 }
 
 code {
