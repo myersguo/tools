@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/tools/encoder-decoder/static/css/main.49d43bf8.css",
+    "main.css": "/tools/encoder-decoder/static/css/main.ae2e66d4.css",
     "main.js": "/tools/encoder-decoder/static/js/main.736f0a16.js",
     "static/js/453.c655801b.chunk.js": "/tools/encoder-decoder/static/js/453.c655801b.chunk.js",
     "index.html": "/tools/encoder-decoder/index.html",
-    "main.49d43bf8.css.map": "/tools/encoder-decoder/static/css/main.49d43bf8.css.map",
+    "main.ae2e66d4.css.map": "/tools/encoder-decoder/static/css/main.ae2e66d4.css.map",
     "main.736f0a16.js.map": "/tools/encoder-decoder/static/js/main.736f0a16.js.map",
     "453.c655801b.chunk.js.map": "/tools/encoder-decoder/static/js/453.c655801b.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.49d43bf8.css",
+    "static/css/main.ae2e66d4.css",
     "static/js/main.736f0a16.js"
   ]
 }
