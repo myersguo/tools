@@ -1,5 +1,5 @@
 import React from 'react';
-import { GitCompare, FileJson, Binary } from 'lucide-react'; // Import icons
+import { GitCompare, FileJson, Binary, Network } from 'lucide-react'; // Import icons
 import './App.css';
 
 function App() {
@@ -59,6 +59,23 @@ function App() {
               </p>
               <a
                 href="encoder-decoder/"
+                className="inline-block bg-claude-button hover:opacity-90 text-white font-bold py-2 px-4 rounded-lg transition-opacity duration-300"
+              >
+                Open Tool
+              </a>
+            </div>
+
+            {/* Graph Viewer Card */}
+            <div className="bg-claude-bg-card border border-claude-border-light rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+              <div className="flex items-center mb-4">
+                <Network className="w-8 h-8 mr-4 text-claude-status-info" />
+                <h2 className="text-2xl font-bold text-claude-text-primary">Graph Viewer</h2>
+              </div>
+              <p className="text-claude-text-secondary mb-6">
+                Visualize Mermaid, PlantUML, Graphviz, and Flowchart diagrams with live preview. Includes templates for sequence diagrams, class diagrams, flowcharts, and more.
+              </p>
+              <a
+                href="graph-viewer/"
                 className="inline-block bg-claude-button hover:opacity-90 text-white font-bold py-2 px-4 rounded-lg transition-opacity duration-300"
               >
                 Open Tool

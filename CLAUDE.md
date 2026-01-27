@@ -14,6 +14,7 @@ tools/
 ├── json-diff-viewer/      # JSON 对比工具
 ├── json-formatter/        # JSON 格式化工具
 ├── encoder-decoder/       # 编解码工具
+├── graph-viewer/          # 图表可视化工具
 └── CLAUDE.md             # 本文件
 ```
 
@@ -25,6 +26,7 @@ tools/
 | **json-diff-viewer** | JSON 对比查看器 | React + Bootstrap + react-diff-viewer-continued | `/json-diff-viewer` |
 | **json-formatter** | JSON 格式化工具 | React + Bootstrap + react-json-view-lite | `/json-formatter` |
 | **encoder-decoder** | 编解码工具 | React + Bootstrap | `/encoder-decoder` |
+| **graph-viewer** | 图表可视化工具 | React + Bootstrap + Mermaid + PlantUML + Graphviz + Flowchart | `/graph-viewer` |
 
 ## 统一配色方案
 
@@ -114,12 +116,12 @@ colors: {
 ls -d */
 
 # 批量安装依赖
-for dir in homepage json-diff-viewer json-formatter encoder-decoder; do
+for dir in homepage json-diff-viewer json-formatter encoder-decoder graph-viewer; do
   cd $dir && npm install && cd ..
 done
 
 # 批量构建
-for dir in homepage json-diff-viewer json-formatter encoder-decoder; do
+for dir in homepage json-diff-viewer json-formatter encoder-decoder graph-viewer; do
   cd $dir && npm run build && cd ..
 done
 ```
@@ -128,7 +130,7 @@ done
 
 ```bash
 # 进入子项目目录
-cd homepage  # 或 json-diff-viewer / json-formatter / encoder-decoder
+cd homepage  # 或 json-diff-viewer / json-formatter / encoder-decoder / graph-viewer
 
 # 安装依赖
 npm install
