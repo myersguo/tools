@@ -37,15 +37,47 @@ function App() {
   const isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
 
   // 尝试解析 JSON，支持自动修复非法/截断的 JSON
-  const parseJson = (input: string): { data: any; repaired: boolean } => {
+  const parseJson = (input: string): { data: any; repaired: boolean; unescaped: boolean } => {
+    let current = input.trim();
+    let unescaped = false;
+
     // 先尝试标准解析
     try {
-      const data = JSON.parse(input);
-      return { data, repaired: false };
-    } catch {
+      const data = JSON.parse(current);
+      return { data, repaired: false, unescaped };
+    } catch (firstError) {
+      // 如果包含转义字符（如 \" 或 \\），尝试反转义
+      if (current.includes('\\"') || current.includes('\\\\')) {
+        try {
+          // 递归反转义：把 \" 替换为 "，把 \\ 替换为 \
+          let prev = '';
+          let iterations = 0;
+          const maxIterations = 10;
+
+          while (prev !== current && iterations < maxIterations) {
+            prev = current;
+            // 使用 replace 进行反转义
+            current = current.replace(/\\"/g, '"').replace(/\\\\/g, '\\');
+            iterations++;
+          }
+
+          // 尝试解析反转义后的字符串
+          const data = JSON.parse(current);
+          unescaped = true;
+          return { data, repaired: false, unescaped };
+        } catch (unescapeError) {
+          // 反转义后仍然失败，继续尝试 best-effort 解析
+        }
+      }
+
       // 标准解析失败，使用 best-effort 解析器处理截断的 JSON
-      const data = bestEffortParse(input);
-      return { data, repaired: true };
+      try {
+        const data = bestEffortParse(current);
+        return { data, repaired: true, unescaped };
+      } catch (err) {
+        // 如果所有方法都失败，抛出原始错误
+        throw firstError;
+      }
     }
   };
 
@@ -65,14 +97,18 @@ function App() {
 
   const formatJson = (indent: number = 2) => {
     try {
-      const { data, repaired } = parseJson(inputJson);
+      const { data, repaired, unescaped } = parseJson(inputJson);
       const formatted = JSON.stringify(data, null, indent);
       setFormattedJson(formatted);
       setParsedData(data);
       setError('');
-      setWarning(repaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
+
+      const warnings: string[] = [];
+      if (unescaped) warnings.push('Input was auto-unescaped (converted escape sequences)');
+      if (repaired) warnings.push('JSON was auto-repaired (truncated or malformed input was fixed)');
+      setWarning(warnings.join('. '));
     } catch (err) {
-      setError(`Cannot repair JSON: ${(err as Error).message}`);
+      setError(`Cannot parse JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
       setWarning('');
@@ -81,14 +117,18 @@ function App() {
 
   const minifyJson = () => {
     try {
-      const { data, repaired } = parseJson(inputJson);
+      const { data, repaired, unescaped } = parseJson(inputJson);
       const minified = JSON.stringify(data);
       setFormattedJson(minified);
       setParsedData(data);
       setError('');
-      setWarning(repaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
+
+      const warnings: string[] = [];
+      if (unescaped) warnings.push('Input was auto-unescaped (converted escape sequences)');
+      if (repaired) warnings.push('JSON was auto-repaired (truncated or malformed input was fixed)');
+      setWarning(warnings.join('. '));
     } catch (err) {
-      setError(`Cannot repair JSON: ${(err as Error).message}`);
+      setError(`Cannot parse JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
       setWarning('');
@@ -97,16 +137,20 @@ function App() {
 
   const escapeJson = () => {
     try {
-      const { data, repaired } = parseJson(inputJson);
+      const { data, repaired, unescaped } = parseJson(inputJson);
       const jsonString = JSON.stringify(data);
       // Escape the JSON string
       const escaped = JSON.stringify(jsonString);
       setFormattedJson(escaped);
       setParsedData(null);
       setError('');
-      setWarning(repaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
+
+      const warnings: string[] = [];
+      if (unescaped) warnings.push('Input was auto-unescaped before escaping');
+      if (repaired) warnings.push('JSON was auto-repaired (truncated or malformed input was fixed)');
+      setWarning(warnings.join('. '));
     } catch (err) {
-      setError(`Cannot repair JSON: ${(err as Error).message}`);
+      setError(`Cannot parse JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
       setWarning('');
@@ -115,22 +159,49 @@ function App() {
 
   const unescapeJson = () => {
     try {
-      // Try to unescape the input
-      const { data: unescaped, repaired } = parseJson(inputJson);
-      if (typeof unescaped === 'string') {
-        // If the result is a string, parse it again to get the JSON object
-        const { data: parsed, repaired: innerRepaired } = parseJson(unescaped);
-        const formatted = JSON.stringify(parsed, null, 2);
-        setFormattedJson(formatted);
-        setParsedData(parsed);
-        setError('');
-        setWarning(repaired || innerRepaired ? 'JSON was auto-repaired (truncated or malformed input was fixed)' : '');
-      } else {
-        // If it's already an object, just format it
-        formatJson();
+      let current = inputJson.trim();
+      let repaired = false;
+      let unescaped = false;
+      let iterations = 0;
+      const maxIterations = 10; // Prevent infinite loops
+
+      // Recursively unescape until we get an object/array or hit max iterations
+      while (iterations < maxIterations) {
+        const { data, repaired: currentRepaired, unescaped: currentUnescaped } = parseJson(current);
+        repaired = repaired || currentRepaired;
+        unescaped = unescaped || currentUnescaped;
+
+        if (typeof data === 'string') {
+          // If result is a string, continue unescaping
+          current = data;
+          iterations++;
+        } else {
+          // If it's an object or array, we're done
+          const formatted = JSON.stringify(data, null, 2);
+          setFormattedJson(formatted);
+          setParsedData(data);
+          setError('');
+
+          // Build warning message
+          const warnings: string[] = [];
+          if (unescaped) {
+            warnings.push('Input was auto-unescaped (converted escape sequences)');
+          }
+          if (repaired) {
+            warnings.push('JSON was auto-repaired (truncated or malformed input was fixed)');
+          }
+          if (iterations > 0) {
+            warnings.push(`Unescaped ${iterations + 1} layer(s) of escaped JSON`);
+          }
+          setWarning(warnings.join('. '));
+          return;
+        }
       }
+
+      // Reached max iterations
+      throw new Error(`Exceeded maximum unescape iterations (${maxIterations}). The input might be infinitely escaped.`);
     } catch (err) {
-      setError(`Cannot repair escaped JSON: ${(err as Error).message}`);
+      setError(`Cannot unescape JSON: ${(err as Error).message}`);
       setFormattedJson('');
       setParsedData(null);
       setWarning('');
