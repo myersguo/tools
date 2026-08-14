@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/tools/json-diff-viewer/static/css/main.9119c26b.css",
-    "main.js": "/tools/json-diff-viewer/static/js/main.a192a185.js",
-    "static/js/453.aece2f9a.chunk.js": "/tools/json-diff-viewer/static/js/453.aece2f9a.chunk.js",
+    "main.css": "/tools/json-diff-viewer/static/css/main.ae397e20.css",
+    "main.js": "/tools/json-diff-viewer/static/js/main.4798dcae.js",
+    "static/js/453.88201462.chunk.js": "/tools/json-diff-viewer/static/js/453.88201462.chunk.js",
     "index.html": "/tools/json-diff-viewer/index.html",
-    "main.9119c26b.css.map": "/tools/json-diff-viewer/static/css/main.9119c26b.css.map",
-    "main.a192a185.js.map": "/tools/json-diff-viewer/static/js/main.a192a185.js.map",
-    "453.aece2f9a.chunk.js.map": "/tools/json-diff-viewer/static/js/453.aece2f9a.chunk.js.map"
+    "main.ae397e20.css.map": "/tools/json-diff-viewer/static/css/main.ae397e20.css.map",
+    "main.4798dcae.js.map": "/tools/json-diff-viewer/static/js/main.4798dcae.js.map",
+    "453.88201462.chunk.js.map": "/tools/json-diff-viewer/static/js/453.88201462.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.9119c26b.css",
-    "static/js/main.a192a185.js"
+    "static/css/main.ae397e20.css",
+    "static/js/main.4798dcae.js"
   ]
 }
