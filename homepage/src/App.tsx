@@ -1,5 +1,5 @@
 import React from 'react';
-import { GitCompare, FileJson, Binary, Network } from 'lucide-react'; // Import icons
+import { GitCompare, FileJson, Binary, Network, TerminalSquare } from 'lucide-react'; // Import icons
 import './App.css';
 
 function App() {
@@ -81,6 +81,23 @@ function App() {
                 Open Tool
               </a>
             </div>
+
+ {/* Terminal / CLI Template Studio Card */}
+ <div className="bg-claude-bg-card border border-claude-border-light rounded-lg shadow-lg p-6 transform hover:scale-105 transition-transform duration-300">
+ <div className="flex items-center mb-4">
+ <TerminalSquare className="w-8 h-8 mr-4 text-claude-primary" />
+ <h2 className="text-2xl font-bold text-claude-text-primary">Terminal / CLI Template Studio</h2>
+ </div>
+ <p className="text-claude-text-secondary mb-6">
+ Generate standalone, offline HTML pages for CLI introductions, quickstarts, terminal panels, and capability cards.
+ </p>
+ <a
+ href="terminal-cli-template-generator/"
+ className="inline-block bg-claude-button hover:opacity-90 text-white font-bold py-2 px-4 rounded-lg transition-opacity duration-300"
+ >
+ Open Tool
+ </a>
+ </div>
 
           </div>
         </main>

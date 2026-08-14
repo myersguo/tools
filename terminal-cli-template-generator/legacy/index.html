@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+ <meta charset="utf-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+ <meta name="description" content="Terminal / CLI 单页介绍 HTML 模板生成器。">
+ <meta name="theme-color" content="#eef4fb">
+ <title>Terminal / CLI 单页 HTML 模板生成器</title>
+ <link rel="icon" href="data:,">
+ <style>
+ :root {
+ color-scheme: light;
+ --paper: #eef4fb;
+ --ink: #152033;
+ --soft: #33445d;
+ --muted: #68788f;
+ --line: #d7e0ed;
+ --accent: #316fe0;
+ --panel: rgba(255,255,255,0.9);
+ --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+ --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+ --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "PingFang SC", monospace;
+ }
+
+ *, *::before, *::after { box-sizing: border-box; }
+ html, body { margin:0; min-width:320px; min-height:100%; overflow-x: hidden; }
+ body {
+ background:
+ radial-gradient(circle at 10% 0%, rgba(94,145,238,0.2), transparent 34rem),
+ linear-gradient(180deg, #f9fbff 0%, var(--paper) 48%, #e9f0f8 100%);
+ color: var(--ink);
+ font-family: var(--sans);
+ font-size:16px;
+ line-height:1.65;
+ -webkit-font-smoothing: antialiased;
+ text-rendering: optimizeLegibility;
+ }
+
+ h1, h2, p, pre { margin:0; }
+ button, input, textarea, select { font: inherit; }
+ button { cursor: pointer; }
+ code, pre { font-family: var(--mono); }
+ :focus-visible { outline:2px solid var(--accent); outline-offset:3px; }
+
+ .page {
+ width: min(calc(100% -32px),1480px);
+ margin:0 auto;
+ padding: clamp(22px,3vw,48px) 0;
+ }
+
+ .hero {
+ display: grid;
+ grid-template-columns: minmax(0,1fr) minmax(260px,34rem);
+ gap:18px;
+ align-items: end;
+ margin-bottom: clamp(20px,2.6vw,34px);
+ }
+
+ .badge {
+ display: inline-flex;
+ align-items: center;
+ gap:10px;
+ color: #174fb8;
+ font-family: var(--mono);
+ font-size:12px;
+ font-weight:700;
+ line-height:1;
+ letter-spacing:0.08em;
+ text-transform: uppercase;
+ }
+
+ .badge span:first-child {
+ width:34px;
+ aspect-ratio:1;
+ display: grid;
+ place-items: center;
+ border-radius:10px;
+ background: var(--ink);
+ color: #fff;
+ }
+
+ .hero h1 {
+ max-width:14ch;
+ margin-top:14px;
+ font-family: var(--display);
+ font-size: clamp(34px,4.8vw,72px);
+ line-height:0.98;
+ letter-spacing: -0.055em;
+ }
+
+ .hero p {
+ max-width:62ch;
+ margin-top:16px;
+ color: var(--muted);
+ font-size: clamp(15px,1.15vw,18px);
+ }
+
+ .rules {
+ min-width:0;
+ padding: 14px 16px;
+ border:1px solid rgba(49,111,224,0.16);
+ border-radius:20px;
+ background: rgba(255,255,255,0.72);
+ box-shadow: 0 16px 46px rgba(31,60,96,0.16);
+ color: var(--soft);
+ font-size:13px;
+ }
+
+ .rules b {
+ display: block;
+ margin-bottom:4px;
+ color: var(--ink);
+ font-family: var(--mono);
+ font-size:12px;
+ letter-spacing:0.04em;
+ text-transform: uppercase;
+ }
+
+ .layout {
+ min-width:0;
+ display: grid;
+ grid-template-columns: minmax(320px,430px) minmax(0,1fr);
+ gap: clamp(18px,2.5vw,32px);
+ align-items: start;
+ }
+
+ .panel {
+ min-width:0;
+ border:1px solid rgba(174,187,208,0.72);
+ border-radius:30px;
+ background: var(--panel);
+ box-shadow: 0 24px 80px rgba(39,72,118,0.16);
+ overflow: hidden;
+ backdrop-filter: blur(22px);
+ }
+
+ .controls { position: sticky; top:18px; }
+
+ .panel-head {
+ padding: 18px 20px;
+ display: flex;
+ align-items: flex-start;
+ justify-content: space-between;
+ gap:14px;
+ border-bottom:1px solid var(--line);
+ background: rgba(248,251,255,0.76);
+ }
+
+ .panel-title { min-width:0; display: grid; gap:2px; }
+ .panel-title h2 { font-size:16px; line-height:1.25; }
+ .panel-title p, .hint, .status { color: var(--muted); font-size:12px; }
+ .panel-body { padding:20px; display: grid; gap:18px; }
+ .field { min-width:0; display: grid; gap:8px; }
+ .field-row { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1fr); gap:12px; }
+ label { color: var(--soft); font-size:13px; font-weight:700; }
+
+ textarea, input, select {
+ width:100%;
+ min-width:0;
+ border:1px solid var(--line);
+ border-radius:16px;
+ background: rgba(255,255,255,0.88);
+ color: var(--ink);
+ }
+
+ textarea {
+ min-height:152px;
+ padding:14px;
+ resize: vertical;
+ font-family: var(--mono);
+ font-size:13px;
+ line-height:1.65;
+ tab-size:2;
+ }
+
+ #terminalInput { min-height:228px; }
+ input { height:46px; padding: 0 14px; }
+ textarea:focus, input:focus, select:focus {
+ border-color: rgba(49,111,224,0.62);
+ box-shadow: 0 0 0 4px rgba(49,111,224,0.12);
+ background: #fff;
+ outline: none;
+ }
+
+ .actions, .panel-actions { display: flex; flex-wrap: wrap; gap:10px; }
+ .button {
+ min-height:44px;
+ padding: 0 16px;
+ display: inline-flex;
+ align-items: center;
+ justify-content: center;
+ border:1px solid transparent;
+ border-radius:999px;
+ font-size:14px;
+ font-weight:750;
+ line-height:1;
+ white-space: nowrap;
+ }
+ .button-primary { background: var(--ink); color: #fff; box-shadow: 0 14px 28px rgba(21,32,51,0.16); }
+ .button-secondary { border-color: var(--line); background: #fff; color: var(--soft); }
+ .status { min-height:1.4em; }
+
+ .results { min-width:0; display: grid; gap:18px; }
+ .preview-wrap { padding:16px; background: linear-gradient(135deg, rgba(255,255,255,0.74), rgba(220,234,255,0.55)); }
+ .browser-chrome {
+ height:42px;
+ padding: 0 14px;
+ display: flex;
+ align-items: center;
+ gap:10px;
+ border:1px solid var(--line);
+ border-bottom:0;
+ border-radius: 18px 18px 0 0;
+ background: rgba(255,255,255,0.84);
+ }
+ .traffic { display: inline-flex; gap:6px; flex: 0 0 auto; }
+ .traffic i { width:10px; aspect-ratio:1; border-radius:50%; background: #f87171; }
+ .traffic i:nth-child(2) { background: #fbbf24; }
+ .traffic i:nth-child(3) { background: #34d399; }
+ .address {
+ min-width:0;
+ flex:1;
+ padding: 6px 10px;
+ border-radius:999px;
+ background: #eef4fb;
+ color: var(--muted);
+ font-family: var(--mono);
+ font-size:12px;
+ line-height:1;
+ overflow: hidden;
+ text-overflow: ellipsis;
+ white-space: nowrap;
+ }
+ iframe {
+ width:100%;
+ height: clamp(500px,58vw,720px);
+ display: block;
+ border:1px solid var(--line);
+ border-radius: 0 0 18px 18px;
+ background: #fff;
+ }
+ .code-panel textarea {
+ min-height:320px;
+ border:0;
+ border-top:1px solid var(--line);
+ border-radius:0;
+ background: #111a26;
+ color: #dbeafe;
+ font-family: var(--mono);
+ font-size:12px;
+ line-height:1.7;
+ }
+
+ @media (max-width:1080px) { .hero, .layout { grid-template-columns:1fr; } .controls { position: static; } }
+ @media (max-width:620px) {
+ .page { width: min(calc(100% -20px),1480px); padding-top:14px; padding-bottom:28px; }
+ .panel-head { padding:16px; flex-direction: column; }
+ .panel-body { padding:16px; }
+ .field-row { grid-template-columns:1fr; }
+ .actions, .panel-actions { width:100%; }
+ .button { flex: 1 1 auto; }
+ .preview-wrap { padding:10px; }
+ iframe { height:620px; }
+ }
+ </style>
+</head>
+<body>
+<main class="page">
+ <header class="hero">
+ <div>
+ <div class="badge"><span>CLI</span><span>single page generator</span></div>
+ <h1>Terminal / CLI介绍页模板生成器</h1>
+ <p>把一段介绍文案和一段终端内容转换成可复制、可下载、可预览的独立单页 HTML。适合 Codex、NTT、ntt-env，以及其他需要终端展示的工具介绍页。</p>
+ </div>
+ <aside class="rules" aria-label="生成规则"><b>规则</b>文本以 <code>**标题**</code> 开头才会生成 H1；不写标题或使用 <code>****</code> 均不显示 H1。序号和按钮留空时不会渲染。终端区保留换行，<code>**token**</code> 会高亮。</aside>
+ </header>
+
+ <div class="layout">
+ <section class="panel controls" aria-labelledby="editorTitle">
+ <div class="panel-head"><div class="panel-title"><h2 id="editorTitle">输入内容</h2><p>点击生成，或按 <code>Ctrl/⌘ + Enter</code> 快速更新。</p></div></div>
+ <div class="panel-body">
+ <div class="field"><label for="templateInput">模板样式</label><select id="templateInput" aria-describedby="templateHint"><option value="feature">Feature + Terminal：单个功能介绍</option><option value="hero">Hero + Terminal：首屏介绍</option><option value="steps">Quickstart Steps：上手步骤</option><option value="cards">Numbered Cards：编号卡片网格</option></select><div class="hint" id="templateHint">选择生成页结构；所有模板都保持单文件、无外部依赖。</div></div>
+ <div class="field" id="copyField"><label for="copyInput">文本</label><textarea id="copyInput" spellcheck="true" aria-describedby="copyHint"></textarea><div class="hint" id="copyHint">需要标题时以 <code>**标题**</code> 开头；直接写正文或使用 <code>****</code> 开头时不显示标题。正文也支持少量 <code>**加粗**</code>。</div></div>
+ <div class="field" id="terminalField"><label for="terminalInput">终端命令 / TUI 内容</label><textarea id="terminalInput" spellcheck="false" aria-describedby="terminalHint"></textarea><div class="hint" id="terminalHint">Hero / Feature 模板使用；长命令会在生成页终端面板内部横向滚动。</div></div>
+ <div class="field" id="itemsField" hidden><label for="itemsInput">列表项 / 步骤项</label><textarea id="itemsInput" spellcheck="false" aria-describedby="itemsHint"></textarea><div class="hint" id="itemsHint">Steps：<code>1 | 标题 |说明 | 命令</code>；Cards：<code>01 | 命令 | 标题 |说明</code>。一行一项，命令内可继续包含 <code>|</code>。</div></div>
+ <div class="field-row"><div class="field"><label for="eyebrowInput">序号 / Eyebrow（可留空）</label><input id="eyebrowInput" type="text" autocomplete="off"></div><div class="field"><label for="ctaInput">主按钮文案（可留空）</label><input id="ctaInput" type="text" autocomplete="off"></div></div>
+ <div class="field" id="secondaryCtaField"><label for="secondaryCtaInput">次按钮文案（Hero 可留空）</label><input id="secondaryCtaInput" type="text" autocomplete="off"></div>
+ <div class="actions"><button class="button button-primary" type="button" id="generateBtn">生成 HTML</button><button class="button button-secondary" type="button" id="resetBtn">恢复示例</button></div>
+ <div class="status" id="status" aria-live="polite"></div>
+ </div>
+ </section>
+
+ <section class="results" aria-label="生成结果">
+ <section class="panel">
+ <div class="panel-head"><div class="panel-title"><h2>样式预览</h2><p>右侧 iframe 展示生成后的独立单页。</p></div><div class="panel-actions"><button class="button button-secondary" type="button" id="copyBtn">复制 HTML</button><button class="button button-secondary" type="button" id="downloadBtn">下载 HTML</button></div></div>
+ <div class="preview-wrap"><div class="browser-chrome" aria-hidden="true"><span class="traffic"><i></i><i></i><i></i></span><span class="address">terminal-cli-intro.html</span></div><iframe id="previewFrame" title="生成页预览" sandbox="allow-scripts"></iframe></div>
+ </section>
+ <section class="panel code-panel" aria-labelledby="sourceTitle"><div class="panel-head"><div class="panel-title"><h2 id="sourceTitle">生成的单页 HTML</h2><p>复制后可保存为任意 <code>.html</code> 文件。</p></div></div><textarea id="htmlOutput" readonly spellcheck="false" aria-label="生成的 HTML 源码"></textarea></section>
+ </section>
+ </div>
+</main>
+
+<script>
+const sample = {
+ template: 'feature',
+ copy: '**Keep the coding loop in your terminal**\nStart Codex in a repository to explore unfamiliar code, plan a change, edit files, and run your local development tools. Steer the active turn, inspect commands and diffs as they appear, and keep follow-up work in the same session.',
+ terminal: '**OpenAI Codex**\n(v0.143.0)\n\nmodel:\n**gpt-5.6-sol** **medium** **/model** to change\n\ndirectory:\n**~/code/my-app**',
+ eyebrow: '01',
+ cta: 'Learn more',
+ secondaryCta: '',
+ items: '01 | codex resume | Return to a saved chat | Reopen a recent chat from the current repository.\n02 | codex --image | Bring visual context into the prompt | Pass an error screenshot, architecture diagram, or design reference.\n03 | subagents | Split up a larger investigation | Ask Codex to delegate focused work to specialized agents.'
+};
+
+const $ = (id) => document.getElementById(id);
+const templateInput = $('templateInput');
+const copyInput = $('copyInput');
+const terminalInput = $('terminalInput');
+const itemsInput = $('itemsInput');
+const eyebrowInput = $('eyebrowInput');
+const ctaInput = $('ctaInput');
+const secondaryCtaInput = $('secondaryCtaInput');
+const terminalField = $('terminalField');
+const itemsField = $('itemsField');
+const secondaryCtaField = $('secondaryCtaField');
+const htmlOutput = $('htmlOutput');
+const previewFrame = $('previewFrame');
+const statusEl = $('status');
+
+function escapeHtml(value) {
+ return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+function stripMarkdown(value) { return String(value || '').replace(/\*\*/g, '').trim(); }
+function renderInlineMarkdown(value, strongClass) {
+ return String(value || '').split('**').map((part, index) => {
+ const escaped = escapeHtml(part);
+ return index %2 ===1 ? '<strong class="' + strongClass + '">' + escaped + '</strong>' : escaped;
+ }).join('');
+}
+function splitParagraphs(value) {
+ const source = String(value || '').trim();
+ if (!source) return [];
+ return source.split(/\n\s*\n/g).map((block) => block.replace(/\s*\n\s*/g, ' ').trim()).filter(Boolean);
+}
+function parseCopyInput(value) {
+ const source = String(value || '').replace(/\r\n?/g, '\n').trim();
+ if (!source) return { title: '', paragraphs: [] };
+ const firstBold = source.match(/^\s*\*\*([\s\S]*?)\*\*/);
+ if (firstBold) return { title: firstBold[1].trim(), paragraphs: splitParagraphs(source.slice(firstBold[0].length).trim()) };
+ return { title: '', paragraphs: splitParagraphs(source) };
+}
+function parseMethodContent(lines) {
+ const methods = [];
+ let current = null;
+ lines.forEach((raw) => {
+ const line = String(raw || '').trim();
+ const methodMatch = line.match(/^\[([^\]]+)\]$/);
+ if (methodMatch) {
+ if (current) methods.push(current);
+ current = { label: methodMatch[1].trim(), lines: [] };
+ return;
+ }
+ if (current) current.lines.push(raw);
+ });
+ if (current) methods.push(current);
+ return methods.map((method) => {
+ const blocks = method.lines.join('\n').split(/\n\s*\n/g).map((block) => block.split('\n').map((line) => line.trim()).filter(Boolean)).filter((block) => block.length);
+ return {
+ label: method.label,
+ blocks: blocks.map((block) => ({ label: block.length >1 ? block[0] : '', command: (block.length >1 ? block.slice(1) : block).join('\n') })).filter((block) => block.label || block.command)
+ };
+ }).filter((method) => method.label && method.blocks.length);
+}
+function isStepHeader(line) { return /^\s*[^|\s][^|]*\|[^|]+\|/.test(line || ''); }
+function parseRows(value, kind) {
+ const lines = String(value || '').replace(/\r\n?/g, '\n').split('\n');
+ if (kind !== 'steps') {
+ return lines.map((line) => line.trim()).filter(Boolean).map((line) => {
+ const parts = line.split('|').map((item) => item.trim());
+ return { marker: parts[0] || '', command: parts[1] || '', title: parts[2] || '', body: parts.slice(3).join(' | ').trim() };
+ }).filter((item) => item.marker || item.title || item.body || item.command);
+ }
+ const rows = [];
+ let current = null;
+ lines.forEach((raw) => {
+ const line = raw.trim();
+ if (!line) { if (current) current.extraLines.push(''); return; }
+ if (isStepHeader(line)) {
+ if (current) rows.push(current);
+ const parts = line.split('|').map((item) => item.trim());
+ current = { marker: parts[0] || '', title: parts[1] || '', body: parts[2] || '', command: parts.slice(3).join(' | ').trim(), extraLines: [] };
+ return;
+ }
+ if (!current) current = { marker: '', title: '', body: '', command: '', extraLines: [] };
+ current.extraLines.push(raw);
+ });
+ if (current) rows.push(current);
+ return rows.map((item) => Object.assign({}, item, { methods: parseMethodContent(item.extraLines || []) })).filter((item) => item.marker || item.title || item.body || item.command || (item.methods && item.methods.length));
+}
+
+function generatedCss() {
+ return String.raw`:root {
+ color-scheme: light;
+ --paper: #f4f8fd;
+ --ink: #142034;
+ --muted: #68788f;
+ --line: #d6e1ef;
+ --accent: #316fe0;
+ --accent-soft: rgba(49,111,224,0.12);
+ --terminal: #111923;
+ --terminal-2: #172233;
+ --terminal-muted: #a8b7c9;
+ --terminal-hot: #ffffff;
+ --radius-lg:34px;
+ --radius-pill:999px;
+ --display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+ --sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+ --mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, "PingFang SC", monospace;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin:0; min-width:0; min-height:100%; overflow-x: hidden; }
+body { background: radial-gradient(circle at 12% 0%, rgba(49,111,224,0.14), transparent 28rem), linear-gradient(180deg, #f8fbff 0%, var(--paper) 48%, #edf4fb 100%); color: var(--ink); font-family: var(--sans); font-size:16px; line-height:1.7; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; }
+h1, h2, h3, p, pre, ol { margin:0; }
+ol { padding:0; list-style: none; }
+code, pre { font-family: var(--mono); }
+:focus-visible { outline:2px solid var(--accent); outline-offset:4px; }
+.page { min-width:0; min-height:100vh; padding: clamp(28px,6vw,84px) clamp(16px,4vw,48px); display: grid; place-items: center; }
+.shell { width: min(100%,1180px); min-width:0; }
+.hero-grid, .feature-grid { min-width:0; display: grid; grid-template-columns: minmax(0,0.86fr) minmax(0,1.14fr); gap: clamp(34px,6vw,78px); align-items: center; }
+.copy { min-width:0; display: grid; align-content: center; }
+.eyebrow { width: max-content; max-width:100%; margin-bottom:26px; padding:7px 12px; border:1px solid var(--line); border-radius: var(--radius-pill); background: #fff; color: var(--accent); font-family: var(--mono); font-size:12px; font-weight:800; line-height:1; letter-spacing:0.08em; text-transform: uppercase; }
+h1 { max-width:12ch; font-family: var(--display); font-size: clamp(42px,7vw,84px); line-height:0.94; letter-spacing: -0.064em; }
+.template-feature h1 { max-width:14ch; font-size: clamp(36px,5vw,68px); }
+.copy-body { max-width:58ch; margin-top:24px; display: grid; gap:14px; color: var(--muted); font-size: clamp(16px,1.45vw,20px); line-height:1.75; }
+.copy-body:first-child, .eyebrow + .copy-body { margin-top:0; }
+.copy-strong { color: var(--ink); font-weight:760; }
+.cta-row { margin-top:34px; display: flex; flex-wrap: wrap; gap:12px; }
+.cta { width: max-content; max-width:100%; min-height:46px; padding:0 18px; display: inline-flex; align-items: center; justify-content: center; border-radius: var(--radius-pill); background: var(--ink); color: #fff; font-weight:760; text-decoration: none; box-shadow:0 18px 40px rgba(20,32,52,0.18); }
+.cta-secondary { background: #fff; color: var(--ink); border:1px solid var(--line); box-shadow: none; }
+.stage { min-width:0; padding: clamp(20px,4vw,44px); border-radius: var(--radius-lg); background: linear-gradient(135deg, #eaf4ff 0%, rgba(184,212,255,0.42) 42%, rgba(93,143,237,0.78) 78%, #3368d8 100%); box-shadow:0 30px 90px rgba(54,103,188,0.3); overflow: hidden; }
+.terminal { min-width:0; min-height: clamp(310px,42vw,480px); padding: clamp(18px,3vw,30px); display: grid; grid-template-rows:auto 1fr auto; border-radius:24px; background: linear-gradient(180deg, var(--terminal-2), var(--terminal)); color: var(--terminal-muted); box-shadow:0 28px 80px rgba(9,17,29,0.42), inset 0 0 0 1px rgba(255,255,255,0.08); overflow: hidden; }
+.terminal-bar { min-width:0; margin-bottom:24px; display: flex; align-items: center; gap:10px; color: var(--terminal-muted); font-family: var(--mono); font-size:12px; line-height:1; }
+.dots { display: inline-flex; gap:7px; flex:0 0 auto; }
+.dots i { width:10px; aspect-ratio:1; border-radius:50%; background: #ff6b6b; }
+.dots i:nth-child(2) { background: #ffd166; }
+.dots i:nth-child(3) { background: #51cf66; }
+.terminal-title { min-width:0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.terminal pre { max-width:100%; min-width:0; overflow-x: auto; white-space: pre; font-size: clamp(13px,1.25vw,15px); line-height:1.86; }
+.terminal code { display: block; min-width: max-content; }
+.term-strong { color: var(--terminal-hot); font-weight:850; }
+.section-head { max-width:760px; margin-bottom: clamp(28px,5vw,52px); }
+.section-head h1 { max-width:13ch; }
+.section-head .copy-body { font-size: clamp(15px,1.25vw,18px); }
+.steps { display: grid; gap:16px; counter-reset: step; }
+.step-card, .number-card, .surface-card { min-width:0; padding: clamp(18px,3vw,28px); border:1px solid var(--line); border-radius:26px; background: rgba(255,255,255,0.86); box-shadow:0 20px 62px rgba(39,72,118,0.12); }
+.step-card { display: grid; grid-template-columns: auto minmax(0,1fr); gap:18px; align-items: start; }
+.step-marker, .card-marker { display: grid; place-items: center; width:42px; height:42px; border-radius:14px; background: var(--ink); color: #fff; font-family: var(--mono); font-size:13px; font-weight:850; }
+.step-main { min-width:0; display: grid; gap:10px; }
+.step-main h2, .number-card h2 { font-size: clamp(20px,2vw,28px); line-height:1.15; letter-spacing: -0.025em; }
+.step-main p, .number-card p { color: var(--muted); }
+.step-command { margin-top:6px; padding:14px 16px; border-radius:16px; background: var(--terminal); color: var(--terminal-muted); overflow: hidden; }
+.step-command pre { max-width:100%; min-width:0; overflow-x: auto; white-space: pre; font-size:13px; line-height:1.7; }
+.step-command code { display: block; min-width: max-content; }
+.step-methods { display:grid; gap:16px; }
+.method-tabs { width:max-content; max-width:100%; display:flex; gap:4px; padding:4px; border-radius:12px; background:rgba(20,32,52,0.06); overflow-x:auto; }
+.method-tab { min-height:36px; padding:0 14px; border:1px solid transparent; border-radius:10px; background:transparent; color:var(--muted); font:700 14px/1 var(--sans); cursor:pointer; white-space:nowrap; }
+.method-tab[aria-selected="true"] { border-color:var(--accent); background:#fff; color:var(--ink); box-shadow:0 0 0 1px rgba(49,111,224,0.14); }
+.method-panel { display:grid; gap:16px; }
+.method-command-block { display:grid; gap:8px; }
+.method-command-label { color:var(--ink); font-weight:760; font-size:14px; }
+.card-grid { min-width:0; display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:16px; }
+.number-card { display: grid; gap:14px; }
+.card-top { min-width:0; display: flex; align-items: center; gap:12px; }
+.card-command { min-width:0; color: var(--accent); font-family: var(--mono); font-size:14px; font-weight:850; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width:820px) { .hero-grid, .feature-grid { grid-template-columns:1fr; } h1 { max-width:13ch; } .stage { border-radius:28px; } .card-grid { grid-template-columns:1fr; } }
+@media (max-width:480px) { .page { padding-inline:12px; } .eyebrow { margin-bottom:20px; } .copy-body { margin-top:20px; } .cta-row { margin-top:28px; } .cta { width:100%; } .stage { padding:12px; } .terminal { min-height:360px; border-radius:20px; } .step-card { grid-template-columns:1fr; } }`;
+}
+function renderCopy(copy, headingTag) {
+ const eyebrow = stripMarkdown(copy.eyebrow);
+ const title = copy.parsed.title;
+ const titleHtml = title ? ' <' + headingTag + '>' + renderInlineMarkdown(title, 'copy-strong') + '</' + headingTag + '>' : '';
+ const bodyHtml = copy.parsed.paragraphs.map((item) => ' <p>' + renderInlineMarkdown(item, 'copy-strong') + '</p>').join('\n');
+ const bodyBlockHtml = bodyHtml ? [' <div class="copy-body">', bodyHtml, ' </div>'].join('\n') : '';
+ return [eyebrow ? ' <p class="eyebrow">' + escapeHtml(eyebrow) + '</p>' : '', titleHtml, bodyBlockHtml].filter(Boolean).join('\n');
+}
+function renderCtas(primary, secondary) {
+ const primaryText = stripMarkdown(primary);
+ const secondaryText = stripMarkdown(secondary);
+ const links = [];
+ if (primaryText) links.push(' <a class="cta" href="#terminal-panel">' + escapeHtml(primaryText) + '</a>');
+ if (secondaryText) links.push(' <a class="cta cta-secondary" href="#details">' + escapeHtml(secondaryText) + '</a>');
+ return links.length ? [' <div class="cta-row">', links.join('\n'), ' </div>'].join('\n') : '';
+}
+function renderTerminal(source) {
+ const terminalSource = source && source.trim() ? source : sample.terminal;
+ const terminalHtml = renderInlineMarkdown(terminalSource.replace(/\r\n?/g, '\n').trimEnd(), 'term-strong');
+ return [' <div class="stage">', ' <section class="terminal" id="terminal-panel" aria-label="Terminal example">', ' <div class="terminal-bar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="terminal-title">terminal session</span></div>', ' <pre><code>' + terminalHtml + '</code></pre>', ' </section>', ' </div>'].join('\n');
+}
+function buildHero(data, copy) {
+ return [' <div class="hero-grid">', ' <div class="copy">', renderCopy(copy, 'h1'), renderCtas(data.cta, data.secondaryCta), ' </div>', renderTerminal(data.terminal), ' </div>'].filter(Boolean).join('\n');
+}
+function buildFeature(data, copy) {
+ return [' <div class="feature-grid">', ' <div class="copy">', renderCopy(copy, 'h1'), renderCtas(data.cta, ''), ' </div>', renderTerminal(data.terminal), ' </div>'].filter(Boolean).join('\n');
+}
+function renderMethodTabs(item, stepIndex) {
+ if (!item.methods || !item.methods.length) return '';
+ const tabs = item.methods.map((method, index) => {
+ const selected = index ===0;
+ return ' <button class="method-tab" type="button" role="tab" aria-selected="' + (selected ? 'true' : 'false') + '" aria-controls="step-' + stepIndex + '-method-' + index + '" id="step-' + stepIndex + '-tab-' + index + '" data-tab-target="step-' + stepIndex + '-method-' + index + '">' + escapeHtml(method.label) + '</button>';
+ }).join('\n');
+ const panels = item.methods.map((method, index) => {
+ const blocks = method.blocks.map((block) => [' <div class="method-command-block">', block.label ? ' <p class="method-command-label">' + renderInlineMarkdown(block.label, 'copy-strong') + '</p>' : '', block.command ? ' <div class="step-command"><pre><code>' + renderInlineMarkdown(block.command, 'term-strong') + '</code></pre></div>' : '', ' </div>'].filter(Boolean).join('\n')).join('\n');
+ return [' <div class="method-panel" id="step-' + stepIndex + '-method-' + index + '" role="tabpanel" aria-labelledby="step-' + stepIndex + '-tab-' + index + '"' + (index ===0 ? '' : ' hidden') + '>', blocks, ' </div>'].join('\n');
+ }).join('\n');
+ return [' <div class="step-methods">', ' <div class="method-tabs" role="tablist" aria-label="安装方式">', tabs, ' </div>', panels, ' </div>'].join('\n');
+}
+function buildSteps(data, copy) {
+ const rows = parseRows(data.items, 'steps');
+ const items = rows.map((item, index) => {
+ const command = item.command ? [' <div class="step-command"><pre><code>' + renderInlineMarkdown(item.command, 'term-strong') + '</code></pre></div>'].join('') : '';
+ const methodTabs = renderMethodTabs(item, index +1);
+ return [' <li class="step-card">', ' <span class="step-marker">' + escapeHtml(item.marker) + '</span>', ' <div class="step-main">', item.title ? ' <h2>' + renderInlineMarkdown(item.title, 'copy-strong') + '</h2>' : '', item.body ? ' <p>' + renderInlineMarkdown(item.body, 'copy-strong') + '</p>' : '', methodTabs, command, ' </div>', ' </li>'].filter(Boolean).join('\n');
+ }).join('\n');
+ return [' <header class="section-head" id="details">', renderCopy(copy, 'h1'), ' </header>', items ? ' <ol class="steps">\n' + items + '\n </ol>' : ''].filter(Boolean).join('\n');
+}
+
+function buildCards(data, copy) {
+ const rows = parseRows(data.items, 'cards');
+ const items = rows.map((item) => [' <article class="number-card">', ' <div class="card-top">', item.marker ? ' <span class="card-marker">' + escapeHtml(item.marker) + '</span>' : '', item.command ? ' <span class="card-command">' + escapeHtml(item.command) + '</span>' : '', ' </div>', item.title ? ' <h2>' + renderInlineMarkdown(item.title, 'copy-strong') + '</h2>' : '', item.body ? ' <p>' + renderInlineMarkdown(item.body, 'copy-strong') + '</p>' : '', ' </article>'].filter(Boolean).join('\n')).join('\n');
+ return [' <header class="section-head" id="details">', renderCopy(copy, 'h1'), ' </header>', items ? ' <div class="card-grid">\n' + items + '\n </div>' : ''].filter(Boolean).join('\n');
+}
+function generatedStepTabsScript() {
+ return String.raw` <script>
+function initInstallTabs() {
+ document.querySelectorAll('.step-methods').forEach(function(group) {
+ var tabs = Array.prototype.slice.call(group.querySelectorAll('[role="tab"]'));
+ var panels = Array.prototype.slice.call(group.querySelectorAll('[role="tabpanel"]'));
+ function activate(tab) {
+ var target = tab.getAttribute('data-tab-target');
+ tabs.forEach(function(item) { item.setAttribute('aria-selected', item === tab ? 'true' : 'false'); });
+ panels.forEach(function(panel) { panel.hidden = panel.id !== target; });
+ tab.focus();
+ }
+ tabs.forEach(function(tab, index) {
+ tab.addEventListener('click', function() { activate(tab); });
+ tab.addEventListener('keydown', function(event) {
+ var nextIndex = index;
+ if (event.key === 'ArrowRight') nextIndex = (index +1) % tabs.length;
+ else if (event.key === 'ArrowLeft') nextIndex = (index -1 + tabs.length) % tabs.length;
+ else if (event.key === 'Home') nextIndex =0;
+ else if (event.key === 'End') nextIndex = tabs.length -1;
+ else return;
+ event.preventDefault();
+ activate(tabs[nextIndex]);
+ });
+ });
+ });
+}
+initInstallTabs();
+ <\/script>`;
+}
+function buildGeneratedHtml(data) {
+ const template = ['hero', 'feature', 'steps', 'cards'].includes(data.template) ? data.template : 'feature';
+ const parsed = parseCopyInput(data.copy);
+ const copy = { parsed, eyebrow: data.eyebrow };
+ const plainTitle = escapeHtml(stripMarkdown(parsed.title) || 'Terminal / CLI introduction');
+ const builders = { hero: buildHero, feature: buildFeature, steps: buildSteps, cards: buildCards };
+ const content = builders[template](data, copy);
+ return ['<!doctype html>', '<html lang="zh-CN">', '<head>', ' <meta charset="utf-8">', ' <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">', ' <meta name="description" content="' + plainTitle + ' - terminal-first CLI introduction.">', ' <meta name="theme-color" content="#f4f8fd">', ' <title>' + plainTitle + '</title>', ' <link rel="icon" href="data:,">', ' <style>', generatedCss(), ' </style>', '</head>', '<body>', ' <main class="page template-' + template + '">', ' <section class="shell" aria-label="CLI introduction">', content, ' </section>', ' </main>', template === 'steps' ? generatedStepTabsScript() : '', '</body>', '</html>'].filter(Boolean).join('\n');
+}
+function currentData() {
+ return { template: templateInput.value, copy: copyInput.value, terminal: terminalInput.value, items: itemsInput.value, eyebrow: eyebrowInput.value, cta: ctaInput.value, secondaryCta: secondaryCtaInput.value };
+}
+function updateTemplateFields() {
+ const template = templateInput.value;
+ const listTemplate = template === 'steps' || template === 'cards';
+ terminalField.hidden = listTemplate;
+ itemsField.hidden = !listTemplate;
+ secondaryCtaField.hidden = template !== 'hero';
+}
+function generate() {
+ updateTemplateFields();
+ const html = buildGeneratedHtml(currentData());
+ htmlOutput.value = html;
+ previewFrame.srcdoc = html;
+ statusEl.textContent = '已生成 ' + html.length.toLocaleString() + ' 字符。';
+ return html;
+}
+function resetSample() {
+ templateInput.value = sample.template;
+ copyInput.value = sample.copy;
+ terminalInput.value = sample.terminal;
+ itemsInput.value = sample.items;
+ eyebrowInput.value = sample.eyebrow;
+ ctaInput.value = sample.cta;
+ secondaryCtaInput.value = sample.secondaryCta;
+ generate();
+ statusEl.textContent = '已恢复示例并重新生成。';
+}
+async function copyHtml() { const html = htmlOutput.value || generate(); try { if (navigator.clipboard && window.isSecureContext) await navigator.clipboard.writeText(html); else { htmlOutput.focus(); htmlOutput.select(); document.execCommand('copy'); } statusEl.textContent = '已复制 HTML。'; } catch (error) { htmlOutput.focus(); htmlOutput.select(); statusEl.textContent = '复制失败，请手动复制源码框内容。'; } }
+function downloadHtml() { const html = htmlOutput.value || generate(); const blob = new Blob([html], { type: 'text/html;charset=utf-8' }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); const title = stripMarkdown(parseCopyInput(copyInput.value).title).toLowerCase().replace(/[^a-z0-9\u4e00-\u9fa5]+/gi, '-').replace(/^-+|-+$/g, '').slice(0,48) || 'terminal-cli-intro'; link.href = url; link.download = title + '.html'; document.body.appendChild(link); link.click(); link.remove(); URL.revokeObjectURL(url); statusEl.textContent = '已下载 ' + link.download + '。'; }
+$('generateBtn').addEventListener('click', generate);
+$('resetBtn').addEventListener('click', resetSample);
+$('copyBtn').addEventListener('click', copyHtml);
+$('downloadBtn').addEventListener('click', downloadHtml);
+templateInput.addEventListener('change', generate);
+document.addEventListener('keydown', (event) => { if ((event.metaKey || event.ctrlKey) && event.key === 'Enter') { event.preventDefault(); generate(); } });
+resetSample();
+</script>
+</body>
+</html>

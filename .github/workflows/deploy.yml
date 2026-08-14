@@ -56,6 +56,13 @@ jobs:
           npm run build
           cd ..
 
+          # Build terminal-cli-template-generator app
+          echo "Building terminal-cli-template-generator..."
+          cd terminal-cli-template-generator
+          npm install
+          npm run check
+          cd ..
+
       - name: Prepare Publish Directory
         run: |
           # Clean and create the publish directory
@@ -76,6 +83,9 @@ jobs:
 
           # Move graph-viewer build into its subdirectory
           mv graph-viewer/build publish/graph-viewer
+
+          # Move terminal-cli-template-generator build into its subdirectory
+          mv terminal-cli-template-generator/dist publish/terminal-cli-template-generator
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3

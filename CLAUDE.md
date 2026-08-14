@@ -15,6 +15,7 @@ tools/
 ├── json-formatter/        # JSON 格式化工具
 ├── encoder-decoder/       # 编解码工具
 ├── graph-viewer/          # 图表可视化工具
+├── terminal-cli-template-generator/ # Terminal / CLI 单页模板生成器
 └── CLAUDE.md             # 本文件
 ```
 
@@ -27,6 +28,7 @@ tools/
 | **json-formatter** | JSON 格式化工具 | React + Bootstrap + react-json-view-lite | `/json-formatter` |
 | **encoder-decoder** | 编解码工具 | React + Bootstrap | `/encoder-decoder` |
 | **graph-viewer** | 图表可视化工具 | React + Bootstrap + Mermaid + PlantUML + Graphviz + Flowchart | `/graph-viewer` |
+| **terminal-cli-template-generator** | Terminal / CLI 单页模板生成器 | React + TypeScript + Vite + Vitest | `/terminal-cli-template-generator` |
 
 ## 统一配色方案
 
@@ -116,12 +118,12 @@ colors: {
 ls -d */
 
 # 批量安装依赖
-for dir in homepage json-diff-viewer json-formatter encoder-decoder graph-viewer; do
+for dir in homepage json-diff-viewer json-formatter encoder-decoder graph-viewer terminal-cli-template-generator; do
   cd $dir && npm install && cd ..
 done
 
 # 批量构建
-for dir in homepage json-diff-viewer json-formatter encoder-decoder graph-viewer; do
+for dir in homepage json-diff-viewer json-formatter encoder-decoder graph-viewer terminal-cli-template-generator; do
   cd $dir && npm run build && cd ..
 done
 ```
@@ -130,7 +132,7 @@ done
 
 ```bash
 # 进入子项目目录
-cd homepage  # 或 json-diff-viewer / json-formatter / encoder-decoder / graph-viewer
+cd homepage  # 或 json-diff-viewer / json-formatter / encoder-decoder / graph-viewer / terminal-cli-template-generator
 
 # 安装依赖
 npm install
@@ -143,6 +145,9 @@ npm run build
 
 # 运行测试
 npm test
+
+# terminal-cli-template-generator 完整检查
+npm run check
 ```
 
 ### 部署到 GitHub Pages

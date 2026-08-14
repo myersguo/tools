@@ -1,0 +1,33 @@
+{
+"name": "terminal-cli-template-generator",
+"private": true,
+"version": "1.0.0",
+ "homepage": "https://myersguo.github.io/tools/terminal-cli-template-generator",
+"type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -b --pretty false",
+    "audit": "node scripts/audit-source.mjs",
+    "check": "npm run audit && npm test && npm run typecheck && npm run build"
+  },
+"dependencies": {
+ "react": "19.2.0",
+ "react-dom": "19.2.0"
+},
+"devDependencies": {
+ "@testing-library/jest-dom": "6.9.1",
+"@testing-library/react": "16.3.2",
+ "@types/node": "18.19.130",
+ "@types/react": "19.2.2",
+ "@types/react-dom": "19.2.1",
+ "@vitejs/plugin-react": "4.7.0",
+ "jsdom": "26.1.0",
+ "typescript": "5.9.2",
+ "vite": "6.4.3",
+ "vitest": "3.2.4"
+}
+}
