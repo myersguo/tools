@@ -68,6 +68,20 @@ describe('generated CSS quality', () => {
  ]
  for (const token of invalidTokens) expect(html).not.toContain(token)
  })
+
+ it('keeps the feature template in two columns on narrow screens', () => {
+ const html = buildStandaloneHtml(getTemplate('feature'), getTemplate('feature').sample)
+
+ expect(html).toContain('@media(max-width:820px){.hero-grid{grid-template-columns:1fr}')
+ expect(html).not.toContain('.hero-grid,.feature-grid{grid-template-columns:1fr}')
+ })
+
+ it('wraps terminal content instead of requiring horizontal scrolling', () => {
+ const html = buildStandaloneHtml(getTemplate('feature'), getTemplate('feature').sample)
+
+ expect(html).toContain('.terminal pre{max-width:100%;min-width:0;overflow-x:hidden;white-space:pre-wrap;overflow-wrap:anywhere')
+ expect(html).toContain('.terminal code{display:block;min-width:0}')
+ })
 })
 
 describe('custom template extension', () => {
@@ -88,4 +102,3 @@ describe('custom template extension', () => {
  expect(html).toContain('template-custom-banner')
  })
 })
-
